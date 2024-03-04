@@ -1,50 +1,19 @@
-# Monte Carlo Simulation for Forecasting Cycle Times 
+(find original README [here](./README.md), this one emphasizes different dataset)
 
-I came across some examples and plugins (see references) for estimating the cycle times in a Kanban system. 
-So my goal was to build the same thing with a Python Jupyter Notebook. 
+There is already historical data taken from Jira (obfuscated) for bug item (likely to be fairly sized in nature). This is just a "what-if" we do things differently, that is by imposing supposedly-**"WIP-limit"**. To make it easier, we just remove items with long cycle time instead of examining historical WIP.
 
-The parts:
-- The Data Exploration Notebook ([notebooks/analyse_data.ipynb](notebooks/analyse_data.ipynb)) can be used to examine the data.
-- The Forecasting Notebook ([notebooks/forecasting_with_monte_carlo.ipynb](notebooks/forecasting_with_monte_carlo.ipynb)) is used to do a 
-Monte Carlo  simulation for the cycle times.
-- The [data](notebooks/data.csv) as CSV file.
-    - *id* => the JIRA issue id (only the number part).
-    - *grp* => the project part from the JIRA issue as number
-    - *cycle_time_days* => cycle time in days for this JIRA issue (`finish date - start date = cycle time days`).
-    - *created_date* => when the issue was created
+Here are the run chart comparison:
 
-![](simulation.png)
-![](dens.png)
+![study case run chart](./study-case-run-chart-bug-resolution-cycle-time.png)
 
+Below are the forecasts using Monte Carlo simulation 5k trials:
 
-## Getting Started
+![study case cycle time](./study-case-bug-cycle-time-impose-WIP-limit.png)
 
-All the required Python packages can be installed with `pipenv`.
+Before "what-if" imposing WIP-Limit, for 5 working items, 70% of the time they will be completed within 36 days, while after WIP-limit within 22 days, which is a better cycle time. 
 
-### Project Setup
-
-First you nee to install pipenv.
-
-```bash
-$ pip install --user pipenv
+```
+np.quantile(simulated_total, q=[0.7])
 ```
 
-Install all the required packages
-
-```bash
-$ pipenv install --dev
-```
-
-### Run the Notebook
-
-```bash
-pipenv run jupyter-lab
-```
-
-## CI Build
-![CI Build](https://github.com/rueedlinger/monte-carlo-simulation/workflows/CI%20Build/badge.svg)
-
-## References
-
--	https://www.actionableagile.com/ 
--	https://kanbanize.com/blog/monte-carlo-simulations/ 
+This is just for the sake of argument, actual effort to impose WIP-Limit maybe harder maybe easier, plus it's just one aspect to Kanban. 
